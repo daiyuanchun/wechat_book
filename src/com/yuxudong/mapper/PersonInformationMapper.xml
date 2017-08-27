@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yuxudong.mapper.PersonInformationMapper" >
+  <update id="updatePersonImage" parameterType="com.yuxudong.po.UserCustom" >
+  update user set image=#{image} where id=#{id} and tel=#{tel}
+  </update>
+  <update id="updatePersonBasicMessage" parameterType="com.yuxudong.po.UserCustom">
+  update user set email=#{email},province=#{province},sex=#{sex},
+  major=#{major},qq=#{qq} where id=#{id} and tel=#{tel}
+  </update>
+  
+  <update id="updatePassword" parameterType="com.yuxudong.po.UserCustom">
+  update user set password=#{password} where id=#{id} and tel=#{tel}
+  </update>
+  
+  <update id="updateTel" parameterType="com.yuxudong.po.UserCustom">
+  update user set tel=#{newTel} where id=#{id} and tel=#{tel}
+  </update>
+  
+</mapper>

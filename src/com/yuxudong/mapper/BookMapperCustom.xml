@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yuxudong.mapper.BookMapperCustom">
+	<!-- 分页难点在写SQL语句上，SQL语句的拼接 -->
+	<sql id="sql_where">
+		1=1
+		<if test="typeId!=null and typeId!= -1">
+			and typeId=${typeId}
+		</if>
+		<if test="provinceId!=null and provinceId!= -1">
+			and provinceId=${provinceId}
+		</if>
+		<if test="cityId!=null and cityId!= -1">
+			and cityId=${cityId}
+		</if>
+	</sql>
+
+	<resultMap type="com.yuxudong.po.Book" id="selectBook">
+		<id column="isbn" property="isbn" />
+		<result column="name" property="name" />
+		<result column="title" property="title" />
+		<result column="author" property="author" />
+		<result column="press" property="press" />
+		<result column="version" property="version" />
+		<result column="number" property="number" />
+		<result column="allname" property="allname" />
+		<result column="content" property="content" />
+		<result column="guidance" property="guidance" />
+		<result column="flag" property="flag" />
+		<result column="city" property="city" />
+		<result column="cityid" property="cityid" />
+		<result column="miniature" property="miniature" />
+		<result column="cover" property="cover" />
+		<result column="sequence" property="sequence" />
+		<result column="catalog" property="catalog" />
+		<result column="bookreview" property="bookreview" />
+		<result column="qrcode" property="qrcode" />
+		<result column="provinceid" property="provinceid" />
+		<result column="typeid" property="typeid" />
+
+		<association property="type" javaType="com.yuxudong.po.Type">
+			<id column="typeid" property="id" />
+			<result column="type" property="type" />
+		</association>
+		<association property="province" javaType="com.yuxudong.po.Province">
+			<id column="provinceid" property="id" />
+			<result column="province" property="province" />
+		</association>
+	</resultMap>
+
+
+
+	<select id="searchVOBook" parameterType="com.yuxudong.po.SearchVO"
+		resultMap="selectBook">
+		<!-- select * from book where 1=1 -->
+		select book.*,type.type,province.province
+		from book,type,province
+		<where>
+			<include refid="sql_where"></include>
+		</where>
+		and book.typeid=type.id
+		and book.provinceid=province.id
+		limit
+		${startPos},5
+	</select>
+
+	<select id="getBooksCount" parameterType="com.yuxudong.po.SearchVO"
+		resultType="long">
+		SELECT COUNT(*) from book,type,province
+		<where>
+			<include refid="sql_where"></include>
+		</where>
+		and book.typeid=type.id
+		and book.provinceid=province.id
+	</select>
+
+	<select id="selectAllType" resultType="com.yuxudong.po.Type">
+		select * from type
+	</select>
+
+	<select id="selectAllProvince" resultType="com.yuxudong.po.Province">
+		select * from province
+	</select>
+
+	<!-- 搜素book表中的前50条记录 -->
+	<select id="selectSome" resultMap="selectBook">
+		select
+		book.*,type.type,province.province
+		from book,type,province
+		where
+		book.typeid=type.id
+		and book.provinceid=province.id limit 50
+	</select>
+
+	<select id="searchBookByKeywords" parameterType="String"
+		resultMap="selectBook">
+		select book.*,type.type,province.province
+		from
+		book,type,province
+		where book.typeid=type.id
+		and
+		book.provinceid=province.id
+		and (isbn like '%${value}%'
+		or name like '%${value}%'
+		or title like
+		'%${value}%'
+		or author like '%${value}%'
+		or allname like '%${value}%')
+	</select>
+
+	<select id="findBookByISBN" parameterType="String" resultMap="selectBook">
+		select book.*,type.type,province.province
+		from book,type,province where book.typeid=type.id
+		and
+		book.provinceid=province.id and isbn=#{value}
+	</select>
+
+	<!-- 录入图书信息 -->
+	<insert id="importBooks" parameterType="com.yuxudong.po.Book">
+		insert into book(isbn,name,title,author,press,version,number,miniature,
+		allname,cover,sequence,catalog,content,guidance,QRCode,flag,
+		typeId,provinceId,city,cityId,restnum)
+		values(#{isbn},#{name},#{title},#{author},#{press},#{version},#{number},#{miniature},
+		#{allname},#{cover},#{sequence},#{catalog},#{content},#{guidance},
+		#{qrcode},#{flag},#{typeid},#{provinceid},#{city},#{cityid},#{restnum})
+
+	</insert>
+
+	<!-- 查找相关书籍 -->
+	<select id="selectRelevantBook" parameterType="java.lang.Integer"
+		resultMap="selectBook">
+		select * from book where typeid=${value}
+	</select>
+
+	<!-- 在线预订 -->
+	<insert id="insertPreset" parameterType="com.yuxudong.po.Preset">
+		insert into
+		preset(isbn,wechatId,tel,title,presetTime,getTime,cover,type,position,author)
+		values(#{isbn},#{wechatid},#{tel},#{title},#{presettime},#{gettime},#{cover},#{type},#{position},#{author})
+	</insert>
+	
+	<!-- 录入借书 信息 -->
+	<insert id="insertBorrowingrecord" parameterType="com.yuxudong.po.BorrowingrecordCustom">
+		insert into borrowingrecord(wechatId,tel,isbn,name,type,
+		borrowTime,returnTime,num,flag,cover,author,position,uuid)
+		values(#{wechatid},#{tel},#{isbn},#{name},#{type},
+		#{borrowtime},#{returntime},#{num},#{flag},#{cover},
+		#{author},#{position},#{uuid})
+	</insert>
+
+	<!-- 借书时查看是否已经预定 -->
+	<select id="selectPresetForBorrowBook" parameterType="com.yuxudong.po.Preset"
+		resultType="java.lang.Integer">
+		SELECT count(*) FROM preset where isbn=#{isbn} and wechatId=#{wechatid} and
+		tel=#{tel}
+	</select>
+
+	<!-- 取出当天的借书记录 -->
+	<!-- 管理员通过自己的管理app的扫码功能扫描用户出示的二维码调出用户的借书单 -->
+	<select id="findTodayBorrowBookRecord" parameterType="com.yuxudong.po.BorrowingrecordCustom"
+		resultType="com.yuxudong.po.BorrowingrecordCustom">
+		select * from borrowingrecord where wechatId=#{wechatid} and tel=#{tel}
+		and borrowTime=#{borrowtime} and flag=#{flag}
+	</select>
+
+	<!--用户点击删除借书记录 -->
+	<delete id="deleteBorrowRecord" parameterType="com.yuxudong.po.BorrowingrecordCustom">
+		delete from borrowingrecord where wechatId=#{wechatid} and tel=#{tel}
+		and isbn=#{isbn} and uuid=#{uuid}
+	</delete>
+
+	<!-- 删除借书记录之前，要比较预订记录里是否还有没借的书，如果有，要把书的数量加1 -->
+	<select id="selectPresetISBN" parameterType="com.yuxudong.po.UserCustom"
+		resultType="String">
+		select preset.isbn from preset where wechatId=#{id} and tel=#{tel}
+	</select>
+
+	<select id="selectBorrowrecordISBN" parameterType="com.yuxudong.po.UserCustom"
+		resultType="String">
+		select borrowingrecord.isbn from borrowingrecord
+		where wechatId=#{id} and tel=#{tel} and flag=0
+	</select>
+
+	<!-- 确认借书后，要把上一次的预订记录删除 -->
+	<delete id="deletePresetRecord" parameterType="com.yuxudong.po.Preset">
+		delete from preset where wechatId=#{wechatid} and tel=#{tel}
+	</delete>
+
+   <!-- 查找图书剩余量 -->
+	<select id="selectRestNumByIsbn" parameterType="String"
+		resultType="Integer">
+    select book.restnum from book where isbn=#{value}
+	</select>
+	
+	<!-- 当该图书只预订了，没被借出，则给该图书剩余量加1  -->
+    <update id="addOrReduceRestNumByIsbn" parameterType="com.yuxudong.po.Book">
+    update book set restnum=${restnum} where isbn=#{isbn}
+    </update>	
+
+	<!-- 还书，查找用户借书信息，取出returnTime与realtime想比较，确定应付现金 -->
+	<select id="selectBorrowRecordForReturnBooks" parameterType="com.yuxudong.po.BorrowingrecordCustom"
+		resultType="com.yuxudong.po.BorrowingrecordCustom">
+		select * from borrowingrecord where wechatId=#{wechatid}
+		and tel=#{tel} and borrowTime=#{borrowtime}
+	</select>
+
+
+	<!-- 管理员确认还书信息，完成还书环节 -->
+	<update id="returnBooks" parameterType="com.yuxudong.po.BorrowingrecordCustom">
+		update borrowingrecord set flag=${flag},realtime=#{realtime},pay=${pay}
+		where wechatId=#{wechatid} and tel=#{tel}
+	</update>
+
+	<!-- 还书时，列出用户所有的未支付的图书信息，让用户支付 -->
+	<select id="selectNotPay" parameterType="com.yuxudong.po.UserCustom"
+		resultType="com.yuxudong.po.BorrowingrecordCustom">
+		select * from borrowingrecord where wechatId=#{id} and tel=#{tel} and pay!=0
+	</select>
+
+	<!--当加载个人中心时，查找用户的预订订单和借书订单 -->
+	<select id="presetMessage" parameterType="com.yuxudong.po.UserCustom"
+		resultType="com.yuxudong.po.Preset">
+		select * from preset where wechatId=#{id} and tel=#{tel}
+	</select>
+
+	<select id="borrowMessage" parameterType="com.yuxudong.po.UserCustom"
+		resultType="com.yuxudong.po.BorrowingrecordCustom">
+		select * from borrowingrecord where wechatId=#{id}
+		and tel=#{tel} and flag=0
+	</select>
+
+	<!-- 用户点击取消预定时，删除对应的一条预订记录 -->
+	<delete id="deleteOnePreset" parameterType="com.yuxudong.po.Preset">
+		delete from preset where isbn=#{isbn} and wechatId=#{wechatid} and
+		tel=#{tel}
+	</delete>
+	
+	<!-- 还书提醒   根据用户信息和距离还书时间倒计时1周查询借阅记录 -->
+	<select id="selectBorrowRecordForReturnBookRemind"  
+	parameterType="com.yuxudong.po.BorrowingrecordCustom"
+	resultType="com.yuxudong.po.BorrowingrecordCustom">
+	select * from borrowingrecord where wechatId=#{wechatid} and tel=#{tel}
+	 and flag=0
+	</select>
+</mapper>

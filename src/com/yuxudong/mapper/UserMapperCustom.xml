@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yuxudong.mapper.UserMapperCustom" >
+  <select id="findUserByIdAndTel" parameterType="com.yuxudong.po.UserCustom"  resultType="com.yuxudong.po.UserCustom">
+  select * from user where id=#{id} and tel=#{tel}
+  </select>
+  
+  <insert id="insertUserOfBeforeRegist" parameterType="com.yuxudong.po.UserCustom">
+  insert into user(id,tel,email) values(#{id},#{tel},#{email})
+  </insert>
+  
+  <update id="updateUserOfRegist" parameterType="com.yuxudong.po.UserCustom">
+  update user set name=#{name},password=#{password},idcard=#{idcard} where id=#{id} and tel=#{tel}
+  </update>
+  
+  <select id="selectUserForLogin" parameterType="com.yuxudong.po.UserCustom" resultType="com.yuxudong.po.UserCustom">
+  select * from user where id=#{id} and tel=#{tel} and password=#{password}
+  </select>
+  
+  <select id="selectProvinceById" parameterType="java.lang.Integer" resultType="com.yuxudong.po.Province">
+  select * from province where id=#{value}
+  </select>
+  
+</mapper>

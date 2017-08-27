@@ -1,0 +1,48 @@
+#container{
+	margin: 0 auto;
+	width: 80%;
+}
+#container p{
+	text-align: center;
+}
+.title{
+	color: blueviolet;
+	font-size: larger;
+	font-weight: 600;
+}
+.img{
+	display: block;
+	margin: 0 auto;
+	width: 175.5px;
+    height: 130px;
+}
+.buttons{
+	margin: 0 auto;
+	width: 300px;
+}
+.buttons .btn1{
+	background-color: red;
+	color: white;
+	border-radius: 5px;
+	width: 100px;
+	height: 40px;
+	float: left;
+	text-decoration: none;
+	text-align: center;
+}
+.buttons .btn1 a{
+	text-decoration: none;
+	color: white;
+	text-align: center;
+}
+.buttons .btn2{
+	background-color: blue;
+	color: white;
+	border-radius: 5px;
+	width: 80px;
+	height: 40px;
+	float: left;
+}
+ol{
+	list-style-type: circle;
+}

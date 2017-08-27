@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yuxudong.mapper.CommentMapperCustom">
+	<insert id="insertComment" parameterType="com.yuxudong.po.Comment">
+		insert into comment(wechatId,tel,isbn,comment,anonymous,type,name,time)
+		values(#{wechatid},#{tel},#{isbn},#{comment},#{anonymous},#{type},#{name},#{time})
+	</insert>
+
+	<select id="findCommentByIsbn" parameterType="String" resultType="com.yuxudong.po.Comment">
+		select * from comment where isbn=#{value}
+	</select>
+</mapper>

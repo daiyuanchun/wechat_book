@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuxudong.mapper.PresetmessageremindMapperCustom">
+ <!-- 预订有书提醒 -->
+	<select id="findRestNumNotEqual0" parameterType="String" resultType="Integer"> 
+	select book.restNum from book where isbn=#{value}
+	</select>
+	
+	<insert id="insertSystemPresetRemind1" parameterType="com.yuxudong.po.Presetmessageremind">
+	insert into presetmessageremind(wechatId,tel,isbn) value(#{wechatid},#{tel},#{isbn})
+	</insert>
+	
+	<select id="selectSystemMessageByUserCustom" parameterType="com.yuxudong.po.UserCustom"
+	resultType="com.yuxudong.po.Presetmessageremind">
+	select * from presetmessageremind where wechatId=#{wechatid} and tel=#{tel}
+	</select>
+</mapper>

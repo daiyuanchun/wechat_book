@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yuxudong.mapper.HistorysearchrecordMapperCustom">
+	<sql id="sql_where">
+		<if test="isbnList!=null">
+			<!-- 使用 foreach遍历传入ids collection：指定输入 对象中集合属性 item：每个遍历生成对象中 open：开始遍历时拼接的串 
+				close：结束遍历时拼接的串 separator：遍历的两个对象中需要拼接的串 -->
+			<!-- 使用实现下边的sql拼接： AND (id=1 OR id=10 OR id=16) -->
+			<foreach collection="isbnList" item="isbn" open="AND ("
+				close=")" separator="or">
+				<!-- 每个遍历需要拼接的串 -->
+				isbn=#{isbn}
+			</foreach>
+		</if>
+		<!-- 实现 “ and id IN(1,10,16)”拼接 -->
+		<!-- <foreach collection="ids" item="user_id" open="and id IN(" close=")" 
+			separator=","> 每个遍历需要拼接的串 #{user_id} </foreach> -->
+	</sql>
+
+	<sql id="sql_where_typeId">
+	   book.typeid=type.id
+		and book.provinceid=province.id 
+		<if test="typeIdList!=null">
+			<!-- 使用 foreach遍历传入ids collection：指定输入 对象中集合属性 item：每个遍历生成对象中 open：开始遍历时拼接的串 
+				close：结束遍历时拼接的串 separator：遍历的两个对象中需要拼接的串 -->
+			<!-- 使用实现下边的sql拼接： AND (id=1 OR id=10 OR id=16) -->
+			<foreach collection="typeIdList" item="typeId" open="AND ("
+				close=")" separator="or">
+				<!-- 每个遍历需要拼接的串 -->
+				typeId=#{typeId}
+			</foreach>
+		</if>
+	</sql>
+
+	<resultMap type="com.yuxudong.po.Book" id="selectBook">
+		<id column="isbn" property="isbn" />
+		<result column="name" property="name" />
+		<result column="title" property="title" />
+		<result column="author" property="author" />
+		<result column="press" property="press" />
+		<result column="version" property="version" />
+		<result column="number" property="number" />
+		<result column="allname" property="allname" />
+		<result column="content" property="content" />
+		<result column="guidance" property="guidance" />
+		<result column="flag" property="flag" />
+		<result column="city" property="city" />
+		<result column="cityid" property="cityid" />
+		<result column="miniature" property="miniature" />
+		<result column="cover" property="cover" />
+		<result column="sequence" property="sequence" />
+		<result column="catalog" property="catalog" />
+		<result column="bookreview" property="bookreview" />
+		<result column="qrcode" property="qrcode" />
+		<result column="provinceid" property="provinceid" />
+		<result column="typeid" property="typeid" />
+
+		<association property="type" javaType="com.yuxudong.po.Type">
+			<id column="typeid" property="id" />
+			<result column="type" property="type" />
+		</association>
+		<association property="province" javaType="com.yuxudong.po.Province">
+			<id column="provinceid" property="id" />
+			<result column="province" property="province" />
+		</association>
+	</resultMap>
+
+	<insert id="insertHistorysearchrecord" parameterType="com.yuxudong.po.Historysearchrecord">
+		insert into historysearchrecord(time,id,tel,isbn)
+		values(#{time},#{id},#{tel},#{isbn})
+	</insert>
+
+	<!-- 根据用户信息查询所浏览过的书籍ISBN编号 -->
+	<select id="selectHistorySearchRecord" parameterType="com.yuxudong.po.UserCustom"
+		resultType="String">
+		select distinct isbn from historysearchrecord where
+		id=#{id} and tel=#{tel}
+	</select>
+
+	<!-- 根据多个ISBN编号查询所对应的类型编号 -->
+	<select id="selectTypeIdAccordingIsbnList" parameterType="com.yuxudong.po.UserCustomVO"
+		resultType="Integer">
+		select distinct typeId from book
+		<where>
+			<!-- 引用sql片段 的id，如果refid指定的id不在本mapper文件中，需要前边加namespace -->
+			<include refid="sql_where"></include>
+			<!-- 在这里还要引用其它的sql片段 -->
+		</where>
+	</select>
+
+	<!-- 根据多个类型编号查询 查询图书 -->
+	<select id="selectBookAccordingTyeIdList" parameterType="com.yuxudong.po.UserCustomVO"
+		resultMap="selectBook">
+        select
+		book.*,type.type,province.province
+		from book,type,province
+		<where>
+			<!-- 引用sql片段 的id，如果refid指定的id不在本mapper文件中，需要前边加namespace -->
+			<include refid="sql_where_typeId"></include>
+			<!-- 在这里还要引用其它的sql片段 -->
+		</where>
+		 limit 50  
+	</select>
+	
+	<update id="updateUserRecommendFrequency" parameterType="com.yuxudong.po.UserCustom">
+	update user set recommendFrequency=${recommendfrequency} where id=#{id} and tel=#{tel}
+	</update>
+	
+	<select id="selectUserRecommendFrequency" parameterType="com.yuxudong.po.UserCustom" 
+	resultType="java.lang.Integer">
+	select recommendFrequency from user where id=#{id} and tel=#{tel}
+	</select>
+</mapper>

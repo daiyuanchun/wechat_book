@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yuxudong.mapper.BorrowingrecordMapper" >
+  <resultMap id="BaseResultMap" type="com.yuxudong.po.Borrowingrecord" >
+    <result column="wechatId" property="wechatid" jdbcType="VARCHAR" />
+    <result column="tel" property="tel" jdbcType="VARCHAR" />
+    <result column="isbn" property="isbn" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="borrowTime" property="borrowtime" jdbcType="VARCHAR" />
+    <result column="returnTime" property="returntime" jdbcType="DATE" />
+    <result column="realtime" property="realtime" jdbcType="VARCHAR" />
+    <result column="num" property="num" jdbcType="INTEGER" />
+    <result column="flag" property="flag" jdbcType="INTEGER" />
+    <result column="cover" property="cover" jdbcType="VARCHAR" />
+    <result column="author" property="author" jdbcType="VARCHAR" />
+    <result column="position" property="position" jdbcType="VARCHAR" />
+    <result column="uuid" property="uuid" jdbcType="VARCHAR" />
+    <result column="pay" property="pay" jdbcType="DOUBLE" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    wechatId, tel, isbn, name, type, borrowTime, returnTime, realtime, num, flag, cover, 
+    author, position, uuid, pay
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.yuxudong.po.BorrowingrecordExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from borrowingrecord
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.yuxudong.po.BorrowingrecordExample" >
+    delete from borrowingrecord
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.yuxudong.po.Borrowingrecord" >
+    insert into borrowingrecord (wechatId, tel, isbn, 
+      name, type, borrowTime, 
+      returnTime, realtime, num, 
+      flag, cover, author, 
+      position, uuid, pay)
+    values (#{wechatid,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR}, #{isbn,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{borrowtime,jdbcType=VARCHAR}, 
+      #{returntime,jdbcType=DATE}, #{realtime,jdbcType=VARCHAR}, #{num,jdbcType=INTEGER}, 
+      #{flag,jdbcType=INTEGER}, #{cover,jdbcType=VARCHAR}, #{author,jdbcType=VARCHAR}, 
+      #{position,jdbcType=VARCHAR}, #{uuid,jdbcType=VARCHAR}, #{pay,jdbcType=DOUBLE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.yuxudong.po.Borrowingrecord" >
+    insert into borrowingrecord
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="wechatid != null" >
+        wechatId,
+      </if>
+      <if test="tel != null" >
+        tel,
+      </if>
+      <if test="isbn != null" >
+        isbn,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="borrowtime != null" >
+        borrowTime,
+      </if>
+      <if test="returntime != null" >
+        returnTime,
+      </if>
+      <if test="realtime != null" >
+        realtime,
+      </if>
+      <if test="num != null" >
+        num,
+      </if>
+      <if test="flag != null" >
+        flag,
+      </if>
+      <if test="cover != null" >
+        cover,
+      </if>
+      <if test="author != null" >
+        author,
+      </if>
+      <if test="position != null" >
+        position,
+      </if>
+      <if test="uuid != null" >
+        uuid,
+      </if>
+      <if test="pay != null" >
+        pay,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="wechatid != null" >
+        #{wechatid,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null" >
+        #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="isbn != null" >
+        #{isbn,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="borrowtime != null" >
+        #{borrowtime,jdbcType=VARCHAR},
+      </if>
+      <if test="returntime != null" >
+        #{returntime,jdbcType=DATE},
+      </if>
+      <if test="realtime != null" >
+        #{realtime,jdbcType=VARCHAR},
+      </if>
+      <if test="num != null" >
+        #{num,jdbcType=INTEGER},
+      </if>
+      <if test="flag != null" >
+        #{flag,jdbcType=INTEGER},
+      </if>
+      <if test="cover != null" >
+        #{cover,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null" >
+        #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="uuid != null" >
+        #{uuid,jdbcType=VARCHAR},
+      </if>
+      <if test="pay != null" >
+        #{pay,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.yuxudong.po.BorrowingrecordExample" resultType="java.lang.Integer" >
+    select count(*) from borrowingrecord
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update borrowingrecord
+    <set >
+      <if test="record.wechatid != null" >
+        wechatId = #{record.wechatid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tel != null" >
+        tel = #{record.tel,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isbn != null" >
+        isbn = #{record.isbn,jdbcType=VARCHAR},
+      </if>
+      <if test="record.name != null" >
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.type != null" >
+        type = #{record.type,jdbcType=VARCHAR},
+      </if>
+      <if test="record.borrowtime != null" >
+        borrowTime = #{record.borrowtime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.returntime != null" >
+        returnTime = #{record.returntime,jdbcType=DATE},
+      </if>
+      <if test="record.realtime != null" >
+        realtime = #{record.realtime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.num != null" >
+        num = #{record.num,jdbcType=INTEGER},
+      </if>
+      <if test="record.flag != null" >
+        flag = #{record.flag,jdbcType=INTEGER},
+      </if>
+      <if test="record.cover != null" >
+        cover = #{record.cover,jdbcType=VARCHAR},
+      </if>
+      <if test="record.author != null" >
+        author = #{record.author,jdbcType=VARCHAR},
+      </if>
+      <if test="record.position != null" >
+        position = #{record.position,jdbcType=VARCHAR},
+      </if>
+      <if test="record.uuid != null" >
+        uuid = #{record.uuid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pay != null" >
+        pay = #{record.pay,jdbcType=DOUBLE},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update borrowingrecord
+    set wechatId = #{record.wechatid,jdbcType=VARCHAR},
+      tel = #{record.tel,jdbcType=VARCHAR},
+      isbn = #{record.isbn,jdbcType=VARCHAR},
+      name = #{record.name,jdbcType=VARCHAR},
+      type = #{record.type,jdbcType=VARCHAR},
+      borrowTime = #{record.borrowtime,jdbcType=VARCHAR},
+      returnTime = #{record.returntime,jdbcType=DATE},
+      realtime = #{record.realtime,jdbcType=VARCHAR},
+      num = #{record.num,jdbcType=INTEGER},
+      flag = #{record.flag,jdbcType=INTEGER},
+      cover = #{record.cover,jdbcType=VARCHAR},
+      author = #{record.author,jdbcType=VARCHAR},
+      position = #{record.position,jdbcType=VARCHAR},
+      uuid = #{record.uuid,jdbcType=VARCHAR},
+      pay = #{record.pay,jdbcType=DOUBLE}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>
